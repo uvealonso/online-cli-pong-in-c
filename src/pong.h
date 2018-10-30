@@ -17,12 +17,34 @@
 #include <sys/socket.h>
  
 
+#define BUFLEN 					512	   //Max length of buffer
+#define PORT					8001   //The port on which to listen (or connect) for incoming data1
+
+#define SCENERY_WIDTH			71
+#define SCENERY_TOP_OFFSET 		1
+#define SCENERY_LEFT_OFFSET		0
+#define SCENERY_HEIGHT			30
+#define PONG_HEIGHT				5
+
+#define BALL_START_X			3500
+#define BALL_START_Y			1500
+
+#define BALL_START_SPEED_X		100
+#define BALL_SPEED_Y_HIT_FROM_CTR_DIV	12
+
+#define SLICE_HEIGHT			7
+#define SLICE_GOAL_SEPARATION	2
+
+#define PLAYER_NAME_MAX_LEN		16
+
+
+
 typedef struct {
 	int16_t top_y;
 	int16_t x;
 	int8_t slice_height;
 	int8_t score;
-	char name[16];
+	char name[PLAYER_NAME_MAX_LEN];
 	int8_t mode_selected;
 	uint8_t mode_confirmed;
 } player;
@@ -40,6 +62,7 @@ typedef struct {
 	int8_t left_offset;
 	int8_t top_offset;
 	int8_t game_status;
+	int8_t is_host;
 	char debug[128];
 } field;
 
@@ -93,19 +116,6 @@ enum {
 };
 
 
-#define BUFLEN 					512	   //Max length of buffer
-#define PORT					8001   //The port on which to listen (or connect) for incoming data1
-
-#define SCENERY_WIDTH			71
-#define SCENERY_TOP_OFFSET 		1
-#define SCENERY_LEFT_OFFSET		0
-#define SCENERY_HEIGHT			30
-#define PONG_HEIGHT				5
-
-#define SLICE_HEIGHT			6
-#define SLICE_GOAL_SEPARATION	2
-
-#define PLAYER_NAME_MAX_LEN		16
 
 void initialize_screen();
 void set_player (player *p, int x, int top_y, int slice_height, int score, char *name);

@@ -12,12 +12,12 @@ void do_game(ball *b, field *f, player *p1, player *p2) {
 	switch (hit_check) {
 		case HIT_PLAYER1_HIT:
 			b->x_speed_th *= -1;
-			b->y_speed_th = dist_from_center / 4;
+			b->y_speed_th = dist_from_center / BALL_SPEED_Y_HIT_FROM_CTR_DIV;
 			break;
 
 		case HIT_PLAYER2_HIT:
 			b->x_speed_th *= -1;
-			b->y_speed_th = dist_from_center / 4;
+			b->y_speed_th = dist_from_center / BALL_SPEED_Y_HIT_FROM_CTR_DIV;
 			break;
 	}
 
@@ -42,19 +42,24 @@ void do_game(ball *b, field *f, player *p1, player *p2) {
 
 	switch (hit_check) {
 		case HIT_LEFT_BORDER_HIT:
-			b->x_th = 24000;
-			b->y_th = 5000;
+			b->x_th = BALL_START_X;
+			b->y_th = BALL_START_Y;
+			b->x_speed_th = BALL_START_SPEED_X;
 			b->y_speed_th = 0;
 			p2->score++;
 			break;
 
 		case HIT_RIGHT_BORDER_HIT:
-			b->x_th = 24000;
-			b->y_th = 5000;
+			b->x_th = BALL_START_X;
+			b->y_th = BALL_START_Y;
+			b->x_speed_th = -BALL_START_SPEED_X;
 			b->y_speed_th = 0;
 			p1->score++;
 			break;
 	}
+	
+	
+	sprintf(f->debug, "B: %d, %d", b->x_th, b->y_th);
 	
 }
 
@@ -164,16 +169,18 @@ void do_network(ball *b, field *f, player *p1, player *p2, uint8_t *buffer, int 
 			break;
 
 		case MESSAGE_BALL_POS:
-			strcpy(f->debug, "B: ");
-			f->debug[3] = 0x30 + buffer[1];
-			f->debug[4] = 0x30 + buffer[2];
-			f->debug[5] = 0x30 + buffer[3];
-			f->debug[6] = 0x30 + buffer[4];
+			//strcpy(f->debug, "B: ");
+			//f->debug[3] = 0x30 + buffer[1];
+			//f->debug[4] = 0x30 + buffer[2];
+			//f->debug[5] = 0x30 + buffer[3];
+			//f->debug[6] = 0x30 + buffer[4];
 
 			x = (buffer[1] << 8) | buffer[2];
 			y = (buffer[3] << 8) | buffer[4];
-			b->x_th = x;
+			b->x_th = 100 * (f->width - x/100 - 1);
 			b->y_th = y;
+	
+			sprintf(f->debug, "B: %d, %d", b->x_th, b->y_th);
 			break;
 
 		case MESSAGE_PLAYER_POS:

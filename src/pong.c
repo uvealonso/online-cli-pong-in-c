@@ -175,11 +175,11 @@ int main(int argc, char **argv)
 	ball b;
 	field f;
 
-	set_player(&p1, SLICE_GOAL_SEPARATION, 6, SLICE_HEIGHT, 0, "Player 1");
-	set_player(&p2, (SCENERY_WIDTH - 1) - SLICE_GOAL_SEPARATION, 6, SLICE_HEIGHT, 0, "Player 2");
-	b.x_th = 24000;
-	b.y_th = 5000;
-	b.x_speed_th = -1000;
+	set_player(&p1, SLICE_GOAL_SEPARATION, 12, SLICE_HEIGHT, 0, "Player 1");
+	set_player(&p2, (SCENERY_WIDTH - 1) - SLICE_GOAL_SEPARATION, 12, SLICE_HEIGHT, 0, "Player 2");
+	b.x_th = BALL_START_X;
+	b.y_th = BALL_START_Y;
+	b.x_speed_th = -BALL_START_SPEED_X;
 	b.y_speed_th = 0;
 	set_field(&f, SCENERY_LEFT_OFFSET, SCENERY_TOP_OFFSET, SCENERY_WIDTH, SCENERY_HEIGHT);
 	f.game_status = STATUS_SELECT_MODE;
@@ -194,6 +194,7 @@ int main(int argc, char **argv)
 		be_host = 1;
 	}
 
+	f.is_host = be_host;
 	strcpy(f.debug, "");
 
 	/* create timer */
@@ -208,8 +209,6 @@ int main(int argc, char **argv)
 
 	memset(&sockdir, 0, sizeof(struct sockaddr_in));
 	memset(&sockclient, 0, sizeof(struct sockaddr_in));
-
-
 
 	sockfd = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	fcntl(sockfd, F_SETFL, O_NONBLOCK);
@@ -262,7 +261,7 @@ int main(int argc, char **argv)
 		if ((pfd[0].revents & POLLIN) == POLLIN) {
 			ch = getch();
 			do_keyboard(ch, &b, &f, &p1, &p2);
-			print_app(&b, &f, &p1, &p2);
+			//print_app(&b, &f, &p1, &p2);
 		}
 
 
@@ -276,7 +275,7 @@ int main(int argc, char **argv)
 				(socklen_t *)&sockclientlen);
 
 			do_network(&b, &f, &p1, &p2, buffer, recbytes);
-			print_app(&b, &f, &p1, &p2);
+			//print_app(&b, &f, &p1, &p2);
 		}
 
 		//POLL TIMER
@@ -285,9 +284,9 @@ int main(int argc, char **argv)
 			read(timerfd, &expirations, sizeof(uint64_t));
 			
 			do_game(&b, &f, &p1, &p2);
-			print_app(&b, &f, &p1, &p2);
 			send_network_message(MESSAGE_BALL_POS, &b, &f, &p1, &p2);
 		}
+		print_app(&b, &f, &p1, &p2);
 
 		//refresh();
 	}//while (!quit) bracket. Do not delete this brace

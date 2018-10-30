@@ -100,12 +100,12 @@ void print_game (ball *b, field *f, player *p1, player *p2) {
 	
 	/* print ball */
 	/* select ball color */
-	if (b->x_th == (center_line * 1000)) {
+	if (b->x_th == (center_line * 100)) {
 		attrset(COLOR_PAIR(2));
 	} else {
 		attrset(COLOR_PAIR(1));
 	}
-	mvprintw(f->top_offset + b->y_th / 1000, f->left_offset + b->x_th / 1000, "O");
+	mvprintw(f->top_offset + b->y_th / 100, f->left_offset + b->x_th / 100, "O");
 
 	/* print player 1 */
 	attrset(COLOR_PAIR(2));
